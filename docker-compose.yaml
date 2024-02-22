@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:latest
+    # networks:
+    #   - mynetwork
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=predictdb
+    restart: always
+    
+  backend:
+    image: backend:latest
+    ports:
+      - "9000:9000"
+    # networks:
+    #   - mynetwork
+    environment:
+      - DB_ENGINE=django.db.backends.mysql
+      - DB_NAME=predictdb
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_HOST=mysql
+      - DB_PORT=3306
+    restart: always
+
+# networks:
+#   mynetwork:
+#     name: deploy-link
+#     external: true
