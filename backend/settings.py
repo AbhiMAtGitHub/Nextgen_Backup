@@ -78,23 +78,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.mysql"),
-        "NAME": os.environ.get("DB_NAME", "predictdb"),
-        "USER": os.environ.get("DB_USER", "root"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "root"),
-        "HOST": os.environ.get("DB_HOST", "mysql"),
-        "PORT": os.environ.get("DB_PORT", "3306"),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.mysql"),
+#         "NAME": os.environ.get("DB_NAME", "predictdb"),
+#         "USER": os.environ.get("DB_USER", "root"),
+#         "PASSWORD": os.environ.get("DB_PASSWORD", "root"),
+#         "HOST": os.environ.get("DB_HOST", "mysql"),
+#         "PORT": os.environ.get("DB_PORT", "3306"),
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -163,5 +163,32 @@ SESSION_COOKIE_AGE = 1800  # 10 minutes in seconds
 # Get the base directory of your Django app
 BASE_DIR1 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Define the relative path to your model file
-ML_MODEL_PATH = os.path.join(BASE_DIR1, 'gradient_boosting_regressor_model.joblib')
+LOG_DIR = os.path.join(BASE_DIR1, 'logs')
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '[%(asctime)s] - %(levelname)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'requests.log'),  # Adjust the file path
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
