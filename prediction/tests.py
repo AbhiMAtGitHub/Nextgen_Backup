@@ -178,3 +178,33 @@ class DeleteUserViewTestCase(TestCase):
         response = self.client.get(self.delete_user_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'authentication/delete_user_confirmation.html')
+
+class SignInViewTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.signin_url = reverse('signin')
+        self.user = User.objects.create_user(username='test@example.com', email='test@example.com', password='testpassword')
+
+    def test_signin_valid_credentials(self):
+        response = self.client.post(self.signin_url, {'email': 'test@example.com', 'password': 'testpassword'})
+        self.assertEqual(response.status_code, 302)  
+        self.assertRedirects(response, reverse('predict'))
+
+ 
+    def test_signin_redirect(self):
+        response = self.client.post(self.signin_url, {'email': 'test@example.com', 'password': 'password'})
+        self.assertRedirects(response, reverse('signin'))
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_signin_invalid_credentials(self):
+        response = self.client.post(self.signin_url, {'email': 'test@example.com', 'password': 'wrongpassword'})
+        self.assertRedirects(response, reverse('signin'))
+        self.assertEqual(response.status_code, 302)  
+        
+    def test_signin_get_request(self):
+        response = self.client.get(self.signin_url)
+        self.assertEqual(response.status_code, 200)  
+        self.assertTemplateUsed(response, 'authentication/signin.html')
+
