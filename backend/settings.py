@@ -163,6 +163,10 @@ SESSION_COOKIE_AGE = 1800  # 10 minutes in seconds
 # Get the base directory of your Django app
 BASE_DIR1 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_DIR2 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+ML_MODEL_PATH = os.path.join(BASE_DIR2, 'gradient_boosting_regressor_model.joblib')
+
 LOG_DIR = os.path.join(BASE_DIR1, 'logs')
 
 if not os.path.exists(LOG_DIR):
